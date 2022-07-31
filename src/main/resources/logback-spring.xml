@@ -1,0 +1,21 @@
+<configuration>
+    <property name="consolePattern"	value="%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] --- %logger{36}[%method:%line] - %msg%n"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${consolePattern}</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="prod">
+        <logger name="com.skdlsco" level="info" additivity="true"/>
+    </springProfile>
+
+    <springProfile name="dev">
+        <logger name="com.skdlsco" level="debug" additivity="true"/>
+    </springProfile>
+
+    <root level="info">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
