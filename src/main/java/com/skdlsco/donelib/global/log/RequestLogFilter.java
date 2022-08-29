@@ -19,7 +19,7 @@ public class RequestLogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            log.info("addr={} request-uri={}", request.getRemoteAddr(), ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUriString());
+            log.info("addr={} method={} request-uri={}", request.getRemoteAddr(), request.getMethod(), ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUriString());
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             throw e;
