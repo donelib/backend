@@ -1,4 +1,4 @@
-package com.skdlsco.donelib.global;
+package com.skdlsco.donelib.global.error;
 
 import com.skdlsco.donelib.global.error.code.ErrorCode;
 import lombok.Builder;
