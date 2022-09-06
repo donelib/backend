@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    group:
+        local:
+          - ds-local
+          - oauth-local
