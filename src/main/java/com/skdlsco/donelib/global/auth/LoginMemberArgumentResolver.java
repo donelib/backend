@@ -1,8 +1,7 @@
 package com.skdlsco.donelib.global.auth;
 
 import com.skdlsco.donelib.domain.entity.Member;
-import com.skdlsco.donelib.global.error.code.GlobalErrorCode;
-import com.skdlsco.donelib.global.error.exception.BusinessException;
+import com.skdlsco.donelib.global.error.exception.UnauthorizedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +27,9 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication.getPrincipal() instanceof MemberOAuth2User oAuth2User))
-            throw new BusinessException(GlobalErrorCode.UNAUTHORIZED);
+            throw new UnauthorizedException();
         if (oAuth2User.getMember() == null)
-            throw new BusinessException(GlobalErrorCode.UNAUTHORIZED);
+            throw new UnauthorizedException();
         return oAuth2User.getMember();
     }
 }
