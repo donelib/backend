@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.skdlsco.donelib.domain.entity.base.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Table(name = "done")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Done {
+public class Done extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

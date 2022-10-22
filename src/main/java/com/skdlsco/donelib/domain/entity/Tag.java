@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.skdlsco.donelib.domain.entity.base.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "tag")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Tag {
+public class Tag extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

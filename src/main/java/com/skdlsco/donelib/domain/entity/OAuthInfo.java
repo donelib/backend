@@ -1,5 +1,6 @@
 package com.skdlsco.donelib.domain.entity;
 
+import com.skdlsco.donelib.domain.entity.base.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Table(name = "oauth_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class OAuthInfo {
+public class OAuthInfo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

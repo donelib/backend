@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.skdlsco.donelib.domain.entity.base.BaseTimeEntity;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @Getter
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
