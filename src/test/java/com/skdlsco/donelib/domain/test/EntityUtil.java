@@ -3,6 +3,7 @@ package com.skdlsco.donelib.domain.test;
 import com.skdlsco.donelib.domain.entity.*;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class EntityUtil {
@@ -31,7 +32,11 @@ public class EntityUtil {
         }
 
         public Done done(Member member, String name, List<Tag> tagList) {
-            Done done = new Done(name);
+            return done(member, name, tagList, LocalDateTime.now());
+        }
+
+        public Done done(Member member, String name, List<Tag> tagList, LocalDateTime doneAt) {
+            Done done = new Done(name, doneAt);
             member.addDone(done);
             if (tagList != null)
                 done.setTagList(tagList);

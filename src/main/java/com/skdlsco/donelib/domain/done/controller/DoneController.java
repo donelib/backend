@@ -1,12 +1,14 @@
 package com.skdlsco.donelib.domain.done.controller;
 
 import com.skdlsco.donelib.domain.done.data.DoneInfo;
+import com.skdlsco.donelib.domain.done.data.DoneListReq;
 import com.skdlsco.donelib.domain.done.data.DoneRes;
 import com.skdlsco.donelib.domain.done.service.DoneCRUDService;
 import com.skdlsco.donelib.domain.entity.Done;
 import com.skdlsco.donelib.domain.entity.Member;
 import com.skdlsco.donelib.global.auth.LoginMember;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class DoneController {
     final private DoneCRUDService doneCRUDService;
 
     @PostMapping()
-    public DoneRes addDone(@LoginMember Member loginMember, @RequestBody DoneInfo doneInfo) {
+    public DoneRes addDone(@LoginMember Member loginMember, @Validated  @RequestBody DoneInfo doneInfo) {
         Done done = doneCRUDService.addDone(loginMember.getId(), doneInfo);
 
         return DoneRes.fromDone(done);
@@ -37,8 +39,8 @@ public class DoneController {
     }
 
     @GetMapping()
-    public List<DoneRes> getDoneList(@LoginMember Member loginMember) {
-        List<Done> doneList = doneCRUDService.getDoneList(loginMember.getId());
+    public List<DoneRes> getDoneList(@LoginMember Member loginMember, @ModelAttribute DoneListReq req) {
+        List<Done> doneList = doneCRUDService.getDoneList(loginMember.getId(), req.getDoneAtFrom(), req.getDoneAtTo());
 
         return doneList.stream().map(DoneRes::fromDone).toList();
     }

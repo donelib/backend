@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class Done extends BaseTimeEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "done_at")
+    private LocalDateTime doneAt;
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -35,6 +39,10 @@ public class Done extends BaseTimeEntity {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateDoneAt(LocalDateTime doneAt) {
+        this.doneAt = doneAt;
     }
 
     public void updateMember(Member member) {
@@ -54,7 +62,8 @@ public class Done extends BaseTimeEntity {
     }
 
     @Builder
-    public Done(String name) {
+    public Done(String name, LocalDateTime doneAt) {
         this.name = name;
+        this.doneAt = doneAt;
     }
 }

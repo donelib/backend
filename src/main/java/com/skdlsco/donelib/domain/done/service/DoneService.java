@@ -12,6 +12,7 @@ import com.skdlsco.donelib.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,7 +31,10 @@ public class DoneService implements DoneCRUDService {
     @Override
     public Done addDone(Long memberId, DoneInfo doneInfo) {
         Member member = memberGetService.getById(memberId);
-        Done newDone = Done.builder().name(doneInfo.getName()).build();
+        Done newDone = Done.builder()
+                .name(doneInfo.getName())
+                .doneAt(doneInfo.getDoneAt())
+                .build();
         List<Tag> tagList = tagRepository.findAllById(doneInfo.getTagList());
 
         newDone.setTagList(tagList);
@@ -48,10 +52,8 @@ public class DoneService implements DoneCRUDService {
     }
 
     @Override
-    public List<Done> getDoneList(Long memberId) {
-        Member member = memberGetService.getById(memberId);
-
-        return member.getDoneList();
+    public List<Done> getDoneList(Long memberId, LocalDateTime from, LocalDateTime to) {
+        return doneRepository.findAllByMemberIdAndDoneAtBetween(memberId, from, to);
     }
 
     @Override
@@ -64,6 +66,7 @@ public class DoneService implements DoneCRUDService {
 
         List<Tag> tagList = tagRepository.findAllById(doneInfo.getTagList());
         done.updateName(doneInfo.getName());
+        done.updateDoneAt(doneInfo.getDoneAt());
         done.setTagList(tagList);
         doneRepository.save(done);
         return done;

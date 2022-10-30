@@ -2,17 +2,21 @@ package com.skdlsco.donelib.domain.done.data;
 
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@Builder
-@ToString
+@NoArgsConstructor
 public class DoneInfo {
+    @NotBlank
     private String name;
-    private List<Long> tagList;
+    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime doneAt;
+    private List<Long> tagList = List.of();
 }

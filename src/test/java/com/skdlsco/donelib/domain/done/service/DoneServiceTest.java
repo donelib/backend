@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.skdlsco.donelib.domain.test.EntityUtil.generate;
@@ -30,7 +31,7 @@ class DoneServiceTest {
         //given
         Member member = EntityUtil.generate(em).member();
         Tag tag = EntityUtil.generate(em).tag(member, "tag1", 1000);
-        DoneInfo doneInfo = new DoneInfo("done1", List.of(tag.getId()));
+        DoneInfo doneInfo = new DoneInfo("done1", LocalDateTime.now(), List.of(tag.getId()));
 
         //when
         Done done = doneService.addDone(member.getId(), doneInfo);
@@ -60,13 +61,14 @@ class DoneServiceTest {
     @Test
     void getDoneList() {
         //given
+        LocalDateTime from = LocalDateTime.now().minusDays(1);
         Member member = EntityUtil.generate(em).member();
         Done done1 = EntityUtil.generate(em).done(member, "done1", null);
         Done done2 = EntityUtil.generate(em).done(member, "done2", null);
         Done done3 = EntityUtil.generate(em).done(member, "done3", null);
 
         //when
-        List<Done> doneList = doneService.getDoneList(member.getId());
+        List<Done> doneList = doneService.getDoneList(member.getId(), from, LocalDateTime.now().plusDays(1));
 
         //then
         assertThat(doneList).containsExactlyInAnyOrder(done1, done2, done3);
@@ -79,7 +81,7 @@ class DoneServiceTest {
         Tag tag1 = generate(em).tag(member, "inittag", 1000);
         Tag tag2 = generate(em).tag(member, "updatetag", 2000);
         Done done = EntityUtil.generate(em).done(member, "init", List.of(tag1));
-        DoneInfo doneInfo = new DoneInfo("updated", List.of(tag2.getId()));
+        DoneInfo doneInfo = new DoneInfo("updated", LocalDateTime.now(), List.of(tag2.getId()));
 
         //when
         Done updatedDone = doneService.updateDone(member.getId(), done.getId(), doneInfo);
