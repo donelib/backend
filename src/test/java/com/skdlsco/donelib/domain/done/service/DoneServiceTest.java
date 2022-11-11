@@ -84,11 +84,12 @@ class DoneServiceTest {
         DoneInfo doneInfo = new DoneInfo("updated", LocalDateTime.now(), List.of(tag2.getId()));
 
         //when
-        Done updatedDone = doneService.updateDone(member.getId(), done.getId(), doneInfo);
+        doneService.updateDone(member.getId(), done.getId(), doneInfo);
 
+        Done updatedDone = em.find(Done.class, done.getId());
         //then
-        assertThat(done).isEqualTo(updatedDone);
-        assertThat(done.getName()).isEqualTo("updated");
-        assertThat(done.getTagList()).containsExactlyInAnyOrder(tag2);
+        assertThat(updatedDone.getId()).isEqualTo(done.getId());
+        assertThat(updatedDone.getName()).isEqualTo("updated");
+        assertThat(updatedDone.getTagList()).containsExactlyInAnyOrder(tag2);
     }
 }

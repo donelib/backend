@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -29,16 +30,17 @@ public class TagService implements TagCRUDService {
         });
     }
 
+    @Transactional
     @Override
     public Tag addTag(Long memberId, TagInfo tagInfo) {
         Tag newTag = tagInfo.toTag();
 
         Member member = memberGetService.getById(memberId);
         member.addTag(newTag);
-        tagRepository.save(newTag);
         return newTag;
     }
 
+    @Transactional
     @Override
     public void deleteTag(Long memberId, Long tagId) {
         Member member = memberGetService.getById(memberId);
@@ -54,17 +56,16 @@ public class TagService implements TagCRUDService {
         return member.getTagList();
     }
 
+    @Transactional
     @Override
     public Tag updateTag(Long memberId, Long tagId, TagInfo tagInfo) {
-        Member member = memberGetService.getById(memberId);
         Tag tag = getTagById(tagId);
 
-        if (!member.getTagList().contains(tag))
+        if (!tag.getMember().getId().equals(memberId))
             throw new BusinessException(GlobalErrorCode.TAG_NOT_FOUND);
 
         tag.updateColor(tagInfo.getColor());
         tag.updateName(tagInfo.getName());
-        tagRepository.save(tag);
         return tag;
     }
 }

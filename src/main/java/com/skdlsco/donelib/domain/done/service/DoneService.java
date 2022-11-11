@@ -12,6 +12,7 @@ import com.skdlsco.donelib.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class DoneService implements DoneCRUDService {
         });
     }
 
+    @Transactional
     @Override
     public Done addDone(Long memberId, DoneInfo doneInfo) {
         Member member = memberGetService.getById(memberId);
@@ -39,10 +41,10 @@ public class DoneService implements DoneCRUDService {
 
         newDone.setTagList(tagList);
         member.addDone(newDone);
-        doneRepository.save(newDone);
         return newDone;
     }
 
+    @Transactional
     @Override
     public void deleteDone(Long memberId, Long doneId) {
         Member member = memberGetService.getById(memberId);
@@ -56,19 +58,18 @@ public class DoneService implements DoneCRUDService {
         return doneRepository.findAllByMemberIdAndDoneAtBetween(memberId, from, to);
     }
 
+    @Transactional
     @Override
     public Done updateDone(Long memberId, Long doneId, DoneInfo doneInfo) {
-        Member member = memberGetService.getById(memberId);
         Done done = getDoneById(doneId);
 
-        if (!member.getDoneList().contains(done))
+        if (!done.getMember().getId().equals(memberId))
             throw new BusinessException(GlobalErrorCode.DONE_NOT_FOUND);
 
         List<Tag> tagList = tagRepository.findAllById(doneInfo.getTagList());
         done.updateName(doneInfo.getName());
         done.updateDoneAt(doneInfo.getDoneAt());
         done.setTagList(tagList);
-        doneRepository.save(done);
         return done;
     }
 }
