@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.done.service;
 
 import com.skdlsco.donelib.domain.done.data.DoneInfo;
+import com.skdlsco.donelib.domain.done.exception.DoneNotFound;
 import com.skdlsco.donelib.domain.done.repository.DoneRepository;
 import com.skdlsco.donelib.domain.entity.Member;
 import com.skdlsco.donelib.domain.entity.Done;
@@ -23,10 +24,11 @@ public class DoneService implements DoneCRUDService {
     final private TagRepository tagRepository;
     final private MemberGetService memberGetService;
 
-    private Done getDoneById(Long tagId) {
-        return doneRepository.findById(tagId).orElseThrow(() -> {
-            return new BusinessException("Done not found", GlobalErrorCode.ENTITY_NOT_FOUND);
-        });
+    private Done getDoneById(Long tagId, Long memberId) {
+        Done done = doneRepository.findById(tagId).orElseThrow(DoneNotFound::new);
+        if (!done.getMember().getId().equals(memberId))
+            throw new DoneNotFound();
+        return done;
     }
 
     @Transactional
@@ -37,7 +39,7 @@ public class DoneService implements DoneCRUDService {
                 .name(doneInfo.getName())
                 .doneAt(doneInfo.getDoneAt())
                 .build();
-        List<Tag> tagList = tagRepository.findAllById(doneInfo.getTagList());
+        List<Tag> tagList = tagRepository.findAllByIdInAndMemberId(doneInfo.getTagList(), memberId);
 
         newDone.setTagList(tagList);
         member.addDone(newDone);
@@ -48,7 +50,7 @@ public class DoneService implements DoneCRUDService {
     @Override
     public void deleteDone(Long memberId, Long doneId) {
         Member member = memberGetService.getById(memberId);
-        Done done = getDoneById(doneId);
+        Done done = getDoneById(doneId, memberId);
 
         member.deleteDone(done);
     }
@@ -61,12 +63,9 @@ public class DoneService implements DoneCRUDService {
     @Transactional
     @Override
     public Done updateDone(Long memberId, Long doneId, DoneInfo doneInfo) {
-        Done done = getDoneById(doneId);
+        Done done = getDoneById(doneId, memberId);
+        List<Tag> tagList = tagRepository.findAllByIdInAndMemberId(doneInfo.getTagList(), memberId);
 
-        if (!done.getMember().getId().equals(memberId))
-            throw new BusinessException(GlobalErrorCode.DONE_NOT_FOUND);
-
-        List<Tag> tagList = tagRepository.findAllById(doneInfo.getTagList());
         done.updateName(doneInfo.getName());
         done.updateDoneAt(doneInfo.getDoneAt());
         done.setTagList(tagList);
