@@ -4,6 +4,7 @@ package com.skdlsco.donelib.global.log;
 import com.skdlsco.donelib.global.log.aop.annotation.TraceExclude;
 import com.skdlsco.donelib.global.log.tracelog.ErrorType;
 import com.skdlsco.donelib.global.log.tracelog.TraceLogManager;
+import com.skdlsco.donelib.global.util.IPUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -56,7 +57,7 @@ public class RequestLogFilter extends OncePerRequestFilter {
     }
 
     private static String buildResponseInfo(HttpServletRequest request, HttpServletResponse response, Exception exception, long responseTime) {
-        String host = request.getRemoteHost();
+        String host = IPUtils.getRealIp(request);
         String method = request.getMethod();
         String requestUri = buildRequestUrl(request);
 
@@ -69,7 +70,7 @@ public class RequestLogFilter extends OncePerRequestFilter {
     }
 
     private static String buildRequestInfo(HttpServletRequest request) {
-        String host = request.getRemoteHost();
+        String host = IPUtils.getRealIp(request);;
         String method = request.getMethod();
         String requestUri = buildRequestUrl(request);
 
