@@ -50,13 +50,26 @@ class TagServiceTest {
         Long tagId = tag.getId();
         em.clear();
 
-        //then
+        //when
         tagService.deleteTag(member.getId(), tagId);
         em.flush();
 
-        //when
+        //then
         Tag deleted = em.find(Tag.class, tagId);
         assertThat(deleted).isNull();
+    }
+
+    @Test
+    void deleteTagNotExist() {
+        //given
+        Member member = generate(em).member();
+        Long tagId = 1234L;
+
+        //when
+        tagService.deleteTag(member.getId(), tagId);
+
+        //then
+        // 아무일도 발생하지 않는다.
     }
 
     @Test
@@ -66,10 +79,10 @@ class TagServiceTest {
         Tag tag1 = generate(em).tag(member, "tagname1", 1000);
         Tag tag2 = generate(em).tag(member, "tagname2", 2000);
 
-        //then
+        //when
         List<Tag> tagList = tagService.getTagList(member.getId());
 
-        //when
+        //then
         assertThat(tagList).containsExactlyInAnyOrder(tag1, tag2);
     }
 
@@ -81,11 +94,13 @@ class TagServiceTest {
         TagInfo tagInfo = new TagInfo("tagname_changed", 2000);
 
         em.clear();
-        //then
+
+        //when
         tagService.updateTag(member.getId(), tag.getId(), tagInfo);
         em.flush();
         Tag updatedTag = em.find(Tag.class, tag.getId());
-        //when
+
+        //then
         assertThat(updatedTag.getId()).isEqualTo(tag.getId());
         assertThat(updatedTag.getName()).isEqualTo("tagname_changed");
         assertThat(updatedTag.getColor()).isEqualTo(2000);

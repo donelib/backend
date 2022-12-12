@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +45,11 @@ public class TagService implements TagCRUDService {
     @Override
     public void deleteTag(Long memberId, Long tagId) {
         Member member = memberGetService.getById(memberId);
-        Tag tag = getTagById(tagId);
+        Optional<Tag> tag =  tagRepository.findById(tagId);
 
-        member.deleteTag(tag);
+        // 존재 하지 않는 경우 무시한다.
+        if (tag.isPresent())
+            member.deleteTag(tag.get());
     }
 
     @Override
