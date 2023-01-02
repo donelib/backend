@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.done.service;
 
 import com.skdlsco.donelib.domain.done.data.DoneInfo;
+import com.skdlsco.donelib.domain.done.data.DoneSearchInfo;
 import com.skdlsco.donelib.domain.done.exception.DoneNotFound;
 import com.skdlsco.donelib.domain.test.DomainJpaTest;
 import com.skdlsco.donelib.domain.entity.Done;
@@ -92,7 +93,7 @@ class DoneServiceTest {
     }
 
     @Test
-    void getDoneList() {
+    void getDoneListByFromTo() {
         //given
         LocalDateTime from = LocalDateTime.now().minusDays(1);
         Member member = EntityUtil.generate(em).member();
@@ -100,11 +101,34 @@ class DoneServiceTest {
         Done done2 = EntityUtil.generate(em).done(member, "done2", null);
         Done done3 = EntityUtil.generate(em).done(member, "done3", null);
 
+        DoneSearchInfo searchInfo = DoneSearchInfo.builder()
+                .doneAtFrom(from)
+                .doneAtTo(LocalDateTime.now().plusDays(1))
+                .build();
         //when
-        List<Done> doneList = doneService.getDoneList(member.getId(), from, LocalDateTime.now().plusDays(1));
+        List<Done> doneList = doneService.getDoneList(member.getId(), searchInfo);
 
         //then
         assertThat(doneList).containsExactlyInAnyOrder(done1, done2, done3);
+    }
+
+    @Test
+    void getDoneListByTagList() {
+        Member member = EntityUtil.generate(em).member();
+        Tag tag1 = EntityUtil.generate(em).tag(member, "tag1", 0);
+        Done done1 = EntityUtil.generate(em).done(member, "done1", List.of(tag1));
+        Done done2 = EntityUtil.generate(em).done(member, "done2", List.of(tag1));
+        Done done3 = EntityUtil.generate(em).done(member, "done3", null);
+
+        DoneSearchInfo searchInfo = DoneSearchInfo.builder()
+                .tagList(List.of(tag1.getId()))
+                .build();
+        //when
+        List<Done> doneList = doneService.getDoneList(member.getId(), searchInfo);
+
+        //then
+        assertThat(doneList).containsExactlyInAnyOrder(done1, done2);
+        assertThat(doneList).doesNotContain(done3);
     }
 
     @Test

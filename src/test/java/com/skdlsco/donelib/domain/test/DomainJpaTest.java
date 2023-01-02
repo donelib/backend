@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.test;
 
 import com.skdlsco.donelib.global.config.JpaConfig;
+import com.skdlsco.donelib.global.config.QueryDslConfig;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +17,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @DataJpaTest
 @ComponentScan(basePackages = "com.skdlsco.donelib.domain")
-@Import({JpaConfig.class})
+@Import({JpaConfig.class, QueryDslConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public @interface DomainJpaTest {
 }

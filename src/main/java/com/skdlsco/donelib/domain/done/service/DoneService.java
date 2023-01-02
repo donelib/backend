@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.done.service;
 
 import com.skdlsco.donelib.domain.done.data.DoneInfo;
+import com.skdlsco.donelib.domain.done.data.DoneSearchInfo;
 import com.skdlsco.donelib.domain.done.exception.DoneNotFound;
 import com.skdlsco.donelib.domain.done.repository.DoneRepository;
 import com.skdlsco.donelib.domain.entity.Member;
@@ -56,8 +57,8 @@ public class DoneService implements DoneCRUDService {
     }
 
     @Override
-    public List<Done> getDoneList(Long memberId, LocalDateTime from, LocalDateTime to) {
-        return doneRepository.findAllByMemberIdAndDoneAtBetween(memberId, from, to);
+    public List<Done> getDoneList(Long memberId, DoneSearchInfo doneSearchInfo) {
+        return doneRepository.findBySearchInfo(memberId, doneSearchInfo);
     }
 
     @Transactional
