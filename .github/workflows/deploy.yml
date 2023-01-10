@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Zip build file
-        run: zip server.zip build/libs/$BUILD_FILE_NAME appspec.yml
+        run: zip -j server.zip build/libs/$BUILD_FILE_NAME appspec.yml
 
       - name: Set AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,11 +39,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Copy build file to S3
-        run: aws s3 cp --region ${{ secrets.AWS_REGION }} server.zip s3://donelib-bucket
+        run: aws s3 cp --region ${{ secrets.AWS_REGION }} server.zip s3://donelib-bucket/server-deploy
 
       - name: Deploy with AWS codeDeploy
         run: aws deploy create-deployment
              --application-name donelib-codedeploy-application
              --deployment-config-name CodeDeployDefault.OneAtATime
              --deployment-group-name donelib-backend
-             --s3-location bucket=donelib-bucket,bundleType=zip,key=server.zip
+             --s3-location bucket=donelib-bucket,bundleType=zip,key=server-deploy/server.zip
