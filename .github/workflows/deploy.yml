@@ -3,6 +3,11 @@ name: Build and Deploy Application
 on:
   push:
     branches: github-action
+    paths:
+      - '.github/**'
+      - 'src/**'
+      - '**.gradle'
+      - 'scripts/**'
   workflow_dispatch:
 env:
   BUILD_FILE_NAME: donelib.jar
