@@ -19,16 +19,14 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
           cache: 'gradle'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Test with Gradle
-        uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-        with:
-          arguments: test
+        run: ./gradlew test
 
       - name: Build With Gradle
-        uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-        with:
-          arguments: build
+        run: ./gradlew clean build
 
       - name: Zip build file
         run: zip server.zip build/libs/$BUILD_FILE_NAME appspec.yml
