@@ -32,11 +32,15 @@ jobs:
 
       - name: Build With Gradle
         run: ./gradlew clean build
-
+      
+      - name: Set build name
+        run: |
+          echo "BUILD_NAME=$(date '+%Y-%m-%d-%s')_$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
       - name: Zip build file
         run: | 
           mkdir temp
-          cp -r build/libs/$BUILD_FILE_NAME appspec.yml scripts temp
+          cp -r appspec.yml scripts temp
+          cp build/libs/$BUILD_FILE_NAME temp/$BUILD_NAME
           zip -r server.zip temp/*
 
       - name: Set AWS credentials
