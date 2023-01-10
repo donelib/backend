@@ -13,6 +13,6 @@ permissions:
 
 hooks:
   ApplicationStart:
-    - location: test.sh
+    - location: scripts/run-deploy.sh
       timeout: 60
       runas: ec2-user
