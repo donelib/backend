@@ -35,7 +35,7 @@ jobs:
       
       - name: Set build name
         run: |
-          echo "BUILD_NAME=$(date '+%Y-%m-%d-%s')_$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
+          echo "BUILD_NAME=$(date '+%Y-%m-%d-%s')_$(git rev-parse --short $GITHUB_SHA).jar" >> $GITHUB_ENV
       - name: Zip build file
         run: | 
           mkdir temp
