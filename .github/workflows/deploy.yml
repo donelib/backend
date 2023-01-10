@@ -39,7 +39,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Copy build file to S3
-        run: aws s3 cp --region ${{ secrets.AWS_REGION }} server.zip s3://donelib-bucket/server-deploy
+        run: aws s3 cp --region ${{ secrets.AWS_REGION }} server.zip s3://donelib-bucket/server-deploy/server.zip
 
       - name: Deploy with AWS codeDeploy
         run: aws deploy create-deployment
