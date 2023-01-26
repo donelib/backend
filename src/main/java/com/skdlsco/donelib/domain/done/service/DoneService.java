@@ -4,24 +4,23 @@ import com.skdlsco.donelib.domain.done.data.DoneInfo;
 import com.skdlsco.donelib.domain.done.data.DoneSearchInfo;
 import com.skdlsco.donelib.domain.done.exception.DoneNotFound;
 import com.skdlsco.donelib.domain.done.repository.DoneRepository;
-import com.skdlsco.donelib.domain.entity.Member;
+import com.skdlsco.donelib.domain.done.repository.DoneSearchRepository;
 import com.skdlsco.donelib.domain.entity.Done;
+import com.skdlsco.donelib.domain.entity.Member;
 import com.skdlsco.donelib.domain.entity.Tag;
 import com.skdlsco.donelib.domain.member.service.MemberGetService;
 import com.skdlsco.donelib.domain.tag.repository.TagRepository;
-import com.skdlsco.donelib.global.error.code.GlobalErrorCode;
-import com.skdlsco.donelib.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class DoneService implements DoneCRUDService {
     final private DoneRepository doneRepository;
+    final private DoneSearchRepository doneSearchRepository;
     final private TagRepository tagRepository;
     final private MemberGetService memberGetService;
 
@@ -58,7 +57,7 @@ public class DoneService implements DoneCRUDService {
 
     @Override
     public List<Done> getDoneList(Long memberId, DoneSearchInfo doneSearchInfo) {
-        return doneRepository.findBySearchInfo(memberId, doneSearchInfo);
+        return doneSearchRepository.findBySearchInfo(memberId, doneSearchInfo);
     }
 
     @Transactional

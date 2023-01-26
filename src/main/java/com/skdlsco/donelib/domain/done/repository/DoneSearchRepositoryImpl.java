@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.skdlsco.donelib.domain.entity.QDone.*;
+import static com.skdlsco.donelib.domain.entity.QDone.done;
 import static com.skdlsco.donelib.domain.entity.QTag.tag;
 
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class DoneSearchRepositoryImpl implements DoneSearchRepository {
 
     @Override
     public List<Done> findBySearchInfo(Long memberId, DoneSearchInfo doneSearchInfo) {
-        List<Done> dones = queryFactory
+        List<Done> findDone = queryFactory
                 .select(done)
                 .from(done)
                 .leftJoin(done.tagList, tag)
@@ -29,8 +29,7 @@ public class DoneSearchRepositoryImpl implements DoneSearchRepository {
                 .where(doneAtBetween(doneSearchInfo.getDoneAtFrom(), doneSearchInfo.getDoneAtTo()),
                         tagIdIn(doneSearchInfo.getTagList()))
                 .fetch();
-
-        return dones;
+        return findDone;
     }
 
     private BooleanExpression tagIdIn(List<Long> tagIdList) {

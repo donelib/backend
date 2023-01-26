@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface DoneSearchRepository {
     List<Done> findBySearchInfo(Long memberId, DoneSearchInfo doneSearchInfo);
+
 }
