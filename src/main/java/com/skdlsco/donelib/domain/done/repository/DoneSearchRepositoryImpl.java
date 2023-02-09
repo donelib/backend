@@ -26,14 +26,18 @@ public class DoneSearchRepositoryImpl implements DoneSearchRepository {
                 .from(done)
                 .leftJoin(done.tagList, tag)
                     .fetchJoin()
-                .where(doneAtBetween(doneSearchInfo.getDoneAtFrom(), doneSearchInfo.getDoneAtTo()),
+                .where(memberIdEq(memberId), doneAtBetween(doneSearchInfo.getDoneAtFrom(), doneSearchInfo.getDoneAtTo()),
                         tagIdIn(doneSearchInfo.getTagList()))
                 .fetch();
         return findDone;
     }
 
+    private BooleanExpression memberIdEq(Long memberId) {
+        return done.member.id.eq(memberId);
+    }
+
     private BooleanExpression tagIdIn(List<Long> tagIdList) {
-        if (tagIdList == null)
+        if (tagIdList == null || tagIdList.isEmpty())
             return null;
         return tag.id.in(tagIdList);
     }

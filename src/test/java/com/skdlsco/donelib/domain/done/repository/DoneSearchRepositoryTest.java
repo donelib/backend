@@ -33,9 +33,6 @@ class DoneSearchRepositoryTest {
         Done done2 = EntityUtil.generate(em).done(member, "doneName2", List.of(tag2));
         Done done3 = EntityUtil.generate(em).done(member, "doneName3", List.of());
 
-        Member otherMember = EntityUtil.generate(em).member();
-        Done otherDone = EntityUtil.generate(em).done(otherMember, "otherDone", List.of());
-
         // when
         DoneSearchInfo searchInfo = DoneSearchInfo.builder()
                 .tagList(List.of(tag2.getId()))
@@ -45,6 +42,29 @@ class DoneSearchRepositoryTest {
 
         // then
         assertThat(findDone).contains(done1, done2);
-        assertThat(findDone).doesNotContain(otherDone, done3);
+        assertThat(findDone).doesNotContain(done3);
+    }
+
+    @Test
+    void findBySearchInfo_except_other_member() {
+        // given
+        Member member = EntityUtil.generate(em).member();
+        Done done = EntityUtil.generate(em).done(member, "doneName1", List.of());
+
+        Member otherMember = EntityUtil.generate(em).member();
+        Done otherDone = EntityUtil.generate(em).done(otherMember, "otherDone", List.of());
+
+        // when
+        DoneSearchInfo searchInfo = DoneSearchInfo.builder()
+                .doneAtTo(done.getDoneAt().plusDays(1))
+                .doneAtFrom(done.getDoneAt().minusDays(1))
+                .tagList(List.of())
+                .build();
+
+        List<Done> findDone = doneSearchRepository.findBySearchInfo(member.getId(), searchInfo);
+
+        // then
+        assertThat(findDone).contains(done);
+        assertThat(findDone).doesNotContain(otherDone);
     }
 }
