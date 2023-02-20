@@ -1,18 +1,59 @@
-<configuration>
-    <property name="consolePattern"	value="%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] --- %logger{36}[%method:%line] - %msg%n"/>
-
+<configuration scan="true" scanPeriod="60 seconds">
+    <property name="DEFAULT_PATTERN"
+              value="%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] --- %logger{36}[%method:%line] - %msg%n"/>
+    <springProperty name="DISCORD_WEBHOOK" source="logging.discord.webhook"/>
+    <springProperty name="LOG_FILE_PATH" source="logging.file.path"/>
+    <springProperty name="LOG_FILE_NAME" source="logging.file.name"/>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${consolePattern}</pattern>
+            <pattern>${DEFAULT_PATTERN}</pattern>
         </encoder>
     </appender>
 
+    <appender name="discord" class="com.skdlsco.donelib.global.log.appender.DiscordAppender">
+        <webhookUrl>
+            ${DISCORD_WEBHOOK}
+        </webhookUrl>
+        <warnColor>16763904</warnColor>
+        <errorColor>15158332</errorColor>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE_PATH}/${LOG_FILE_NAME}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="async_discord" class="ch.qos.logback.classic.AsyncAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <appender-ref ref="discord"/>
+    </appender>
+
     <springProfile name="prod">
-        <logger name="com.skdlsco" level="info" additivity="true"/>
+        <logger name="com.skdlsco" level="info" additivity="true">
+            <appender-ref ref="async_discord"/>
+        </logger>
+        <root level="info">
+            <appender-ref ref="file_appender"/>
+        </root>
     </springProfile>
 
-    <springProfile name="dev">
-        <logger name="com.skdlsco" level="debug" additivity="true"/>
+    <springProfile name="local">
+        <logger name="com.skdlsco" level="debug" additivity="true">
+            <appender-ref ref="async_discord"/>
+        </logger>
     </springProfile>
 
     <root level="info">
