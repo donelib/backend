@@ -1,6 +1,7 @@
 package com.skdlsco.donelib.domain.done.controller;
 
 import com.skdlsco.donelib.domain.done.data.*;
+import com.skdlsco.donelib.domain.done.service.DoneAnalyzeService;
 import com.skdlsco.donelib.domain.done.service.DoneCRUDService;
 import com.skdlsco.donelib.domain.entity.Done;
 import com.skdlsco.donelib.domain.entity.Member;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DoneController {
     final private DoneCRUDService doneCRUDService;
+    final private DoneAnalyzeService doneAnalyzeService;
 
     @PostMapping()
     public DoneRes addDone(@LoginMember Member loginMember, @Valid @RequestBody DoneInfo doneInfo) {
@@ -45,5 +47,12 @@ public class DoneController {
         List<Done> doneList = doneCRUDService.getDoneList(loginMember.getId(), req);
 
         return doneList.stream().map(DoneRes::fromDone).toList();
+    }
+
+    @GetMapping("analyze/done-count-per-day")
+    public List<DoneCountPerDay> getDoneCountPerDay(@LoginMember Member loginMember, @Valid @ModelAttribute GetDoneCountPerDayReq req) {
+        if (req.isOver365Days())
+            throw new BadRequestException(ErrorDetail.of("", "요청 날짜 범위는 최대 1년까지입니다."));
+        return doneAnalyzeService.countDonePerDay(loginMember.getId(), req);
     }
 }
