@@ -55,4 +55,9 @@ public class DoneController {
             throw new BadRequestException(ErrorDetail.of("", "요청 날짜 범위는 최대 1년까지입니다."));
         return doneAnalyzeService.countDonePerDay(loginMember.getId(), req);
     }
+
+    @GetMapping("analyze/done-count-per-tag")
+    public List<DoneCountPerTag> getDoneCountPerDay(@LoginMember Member loginMember, @Valid @ModelAttribute GetDoneCountPerTagReq req) {
+        return doneAnalyzeService.countDonePerTag(loginMember.getId(), req);
+    }
 }
