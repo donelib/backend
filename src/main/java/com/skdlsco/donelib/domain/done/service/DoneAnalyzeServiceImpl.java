@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,9 +24,13 @@ public class DoneAnalyzeServiceImpl implements DoneAnalyzeService {
         return doneAnalyzeRepository.countDonePerDayInRange(memberId, req.getDoneAtFrom(), req.getDoneAtTo());
     }
 
+    private LocalDateTime dayFirstOfMonth(LocalDate date) {
+        return date.atStartOfDay().minusDays(date.getDayOfMonth() - 1);
+    }
+
     @Override
     public List<DoneCountPerTag> countDonePerTag(Long memberId, GetDoneCountPerTagReq req) {
-        LocalDateTime from = req.getMonth().atStartOfDay();
+        LocalDateTime from = dayFirstOfMonth(req.getMonth());
         LocalDateTime to = from.plusMonths(1);
 
         return doneAnalyzeRepository.countDonePerTagInRange(memberId, from, to);
