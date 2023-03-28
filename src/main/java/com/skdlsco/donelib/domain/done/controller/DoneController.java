@@ -51,13 +51,13 @@ public class DoneController {
 
     @GetMapping("analyze/done-count-per-day")
     public List<DoneCountPerDay> getDoneCountPerDay(@LoginMember Member loginMember, @Valid @ModelAttribute GetDoneCountPerDayReq req) {
-        if (req.isOver365Days())
+        if (req.isOver1Year())
             throw new BadRequestException(ErrorDetail.of("", "요청 날짜 범위는 최대 1년까지입니다."));
         return doneAnalyzeService.countDonePerDay(loginMember.getId(), req);
     }
 
     @GetMapping("analyze/done-count-per-tag")
-    public List<DoneCountPerTag> getDoneCountPerDay(@LoginMember Member loginMember, @Valid @ModelAttribute GetDoneCountPerTagReq req) {
+    public List<DoneCountPerTag> getDoneCountPerTag(@LoginMember Member loginMember, @Valid @ModelAttribute GetDoneCountPerTagReq req) {
         return doneAnalyzeService.countDonePerTag(loginMember.getId(), req);
     }
 }
