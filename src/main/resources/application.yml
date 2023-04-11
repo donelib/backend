@@ -4,3 +4,9 @@ spring:
         local:
           - ds-local
           - oauth-local
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

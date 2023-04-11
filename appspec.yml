@@ -16,3 +16,7 @@ hooks:
     - location: scripts/run-deploy.sh
       timeout: 180
       runas: ec2-user
+  ValidateService:
+    - location: scripts/validate-deploy.sh
+      timeout: 180
+      runas: ec2-user
